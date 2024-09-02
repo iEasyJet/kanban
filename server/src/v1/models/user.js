@@ -1,4 +1,4 @@
-const mogoose = require('mogoose');
+const mogoose = require('mongoose');
 const { schemaOptions } = require('./modelOptions');
 
 const userSchema = new mogoose.Schema(
