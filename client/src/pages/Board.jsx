@@ -1,5 +1,5 @@
 function Board() {
-  return <></>;
+  return <div>Board</div>;
 }
 
 export default Board;

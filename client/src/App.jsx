@@ -1,8 +1,8 @@
 import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-/* import AppLayout from '../src/components/layout/AppLayout';
-import AuthLayout from '../src/components/layout/AuthLayout'; */
+import AppLayout from '../src/components/layout/AppLayout';
+import AuthLayout from '../src/components/layout/AuthLayout';
 import Home from '../src/pages/Home';
 import Board from '../src/pages/Board';
 import Login from '../src/pages/Login';
@@ -11,23 +11,23 @@ import Signup from '../src/pages/Signup';
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <Home />,
+    element: <AppLayout component={<Home />} />,
   },
   {
     path: '/login',
-    element: <Login />,
+    element: <AuthLayout component={<Login />} />,
   },
   {
     path: '/signup',
-    element: <Signup />,
+    element: <AuthLayout component={<Signup />} />,
   },
   {
     path: '/boards',
-    element: <Board />,
+    element: <AuthLayout component={<Home />} />,
   },
   {
     path: '/boards/:boardId',
-    element: <Board />,
+    element: <AuthLayout component={<Board />} />,
   },
 ]);
 

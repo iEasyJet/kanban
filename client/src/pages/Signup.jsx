@@ -1,5 +1,5 @@
 function Signup() {
-  return <></>;
+  return <div>Signup</div>;
 }
 
 export default Signup;
