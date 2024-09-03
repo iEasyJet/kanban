@@ -1,5 +1,7 @@
 const jsonwebtoken = require('jsonwebtoken');
-const User = require('../models/user');
+const dotenv = require('dotenv');
+dotenv.config();
+const user = require('../models/user');
 const { NODE_ENV, SIMPLE_SECRET_KEY, TOKEN_SECRET_KEY } = process.env;
 
 const tokenDecode = (req) => {
@@ -26,12 +28,12 @@ exports.verifyToken = async (req, res, next) => {
   const decoded = tokenDecode(req);
 
   if (decoded) {
-    const user = await User.findbyId(decoded.id);
+    const userData = await user.findById(decoded.id);
     if (!user) {
       res.status(401).json('Необходима авторизация');
     }
 
-    req.user = user;
+    req.user = userData;
     next();
   } else {
     res.status(401).json('Необходима авторизация');

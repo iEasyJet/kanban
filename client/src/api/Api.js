@@ -7,9 +7,8 @@ class Api {
     if (res.ok) {
       return res.json();
     }
-    return Promise.reject(
-      new Error(`Произошла ошибка со статус-кодом ${res.status}`)
-    );
+
+    return Promise.reject(res.json());
   }
 
   _getToken() {

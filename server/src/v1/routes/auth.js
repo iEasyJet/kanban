@@ -12,12 +12,10 @@ router.post(
     .withMessage('Имя пользователя должно содержать минимум 8 символов.'),
   body('password')
     .isLength({ min: 8 })
-    .withMessage('Пароль пользователя должен содержать минимум 8 символов.'),
+    .withMessage('Пароль должен содержать минимум 8 символов.'),
   body('confirmPassword')
     .isLength({ min: 8 })
-    .withMessage(
-      'Пароль подтверждения пользователя должен содержать минимум 8 символов.'
-    ),
+    .withMessage('Пароль подтверждения должен содержать минимум 8 символов.'),
   body('username').custom((value) => {
     return User.findOne({ username: value }).then((user) => {
       if (user) {

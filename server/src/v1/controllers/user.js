@@ -1,33 +1,35 @@
 const User = require('../models/user');
 const CryptoJS = require('crypto-js');
 const jsonwebtoken = require('jsonwebtoken');
+const dotenv = require('dotenv');
+dotenv.config();
 const { NODE_ENV, PASSWORD_SECRET_KEY, SIMPLE_SECRET_KEY, TOKEN_SECRET_KEY } =
   process.env;
 
 function createToken(userID) {
-  const token = jsonwebtoken.sign(
+  return jsonwebtoken.sign(
     { id: userID },
     NODE_ENV === 'production' ? TOKEN_SECRET_KEY : SIMPLE_SECRET_KEY,
     { expiresIn: '7d' }
   );
-
-  return token;
 }
 
 exports.register = async (req, res) => {
-  const { password } = req.body;
-
+  const { username, password } = req.body;
+  let newPassword;
   try {
-    req.body.password = CryptoJS.AES.encrypt(
+    newPassword = CryptoJS.AES.encrypt(
       password,
       NODE_ENV === 'production' ? PASSWORD_SECRET_KEY : SIMPLE_SECRET_KEY
     );
 
-    const user = await User.create(req.body);
+    await User.create({ username, password: newPassword });
+    const userData = await User.findOne({ username });
 
-    const token = createToken(user._id);
+    const token = createToken(userData._id.toString());
+    console.log(userData, token, newPassword);
 
-    res.status(201).send({ user, token });
+    res.status(201).json({ userData, token });
   } catch (error) {
     return res.status(500).json(error);
   }

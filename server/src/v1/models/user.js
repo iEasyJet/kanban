@@ -17,4 +17,4 @@ const userSchema = new mogoose.Schema(
   schemaOptions
 );
 
-module.exports = mogoose.model('User', userSchema);
+module.exports = mogoose.model('user', userSchema);
