@@ -27,7 +27,6 @@ exports.register = async (req, res) => {
     const userData = await User.findOne({ username });
 
     const token = createToken(userData._id.toString());
-    console.log(userData, token, newPassword);
 
     res.status(201).json({ userData, token });
   } catch (error) {
@@ -39,7 +38,7 @@ exports.login = async (req, res) => {
   const { username, password } = req.body;
 
   try {
-    const user = await User.findOne({ username }).select(password);
+    const user = await User.findOne({ username }).select('+password');
     if (!user) {
       return res
         .status(401)
@@ -59,9 +58,9 @@ exports.login = async (req, res) => {
 
     user.password = undefined;
 
-    const token = createToken(user._id);
+    const token = createToken(user._id.toString());
 
-    res.status(201).send({ user, token });
+    res.status(201).json({ user, token });
   } catch (error) {
     return res.status(500).json(error);
   }

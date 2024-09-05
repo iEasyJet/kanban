@@ -36,7 +36,7 @@ router.post(
     .isLength({ min: 8 })
     .withMessage('Пароль пользователя должен содержать минимум 8 символов.'),
   validation.validate,
-  userController.register
+  userController.login
 );
 
 router.post('/verify-token', tokenHandler.verifyToken, (req, res) => {

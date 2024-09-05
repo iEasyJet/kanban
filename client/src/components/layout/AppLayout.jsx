@@ -1,13 +1,16 @@
 import { useEffect, useState } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import { authUtils } from '../../utils/utils';
 import Loading from '../common/Loading';
 import { Box } from '@mui/material';
 import Sidebar from '../common/Sidebar';
+import { setUser } from '../../redux/Slices/userSlice';
 
 // eslint-disable-next-line react/prop-types
 function AppLayout({ component }) {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -17,11 +20,12 @@ function AppLayout({ component }) {
         navigate('/login');
       } else {
         setLoading(false);
+        dispatch(setUser(user));
       }
     };
 
     checkAuth();
-  }, [navigate]);
+  }, [navigate, dispatch]);
   return loading ? (
     <Loading fullHeight />
   ) : (
