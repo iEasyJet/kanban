@@ -30,7 +30,7 @@ exports.register = async (req, res) => {
 
     res.status(201).json({ userData, token });
   } catch (error) {
-    return res.status(500).json(error);
+    res.status(500).json(error);
   }
 };
 
@@ -62,6 +62,6 @@ exports.login = async (req, res) => {
 
     res.status(201).json({ user, token });
   } catch (error) {
-    return res.status(500).json(error);
+    res.status(500).json(error);
   }
 };
