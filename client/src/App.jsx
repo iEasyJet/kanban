@@ -23,11 +23,11 @@ const router = createBrowserRouter([
   },
   {
     path: '/boards',
-    element: <AuthLayout component={<Home />} />,
+    element: <AppLayout component={<Home />} />,
   },
   {
     path: '/boards/:boardId',
-    element: <AuthLayout component={<Board />} />,
+    element: <AppLayout component={<Board />} />,
   },
 ]);
 

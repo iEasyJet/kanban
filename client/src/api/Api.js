@@ -46,6 +46,37 @@ class Api {
       },
     }).then(this._parseResponse);
   }
+
+  createBoard() {
+    return fetch(`${this.baseUrl}/boards`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${this._getToken()}`,
+        'Content-Type': 'application/json',
+      },
+    }).then(this._parseResponse);
+  }
+
+  getAllBoards() {
+    return fetch(`${this.baseUrl}/boards`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${this._getToken()}`,
+        'Content-Type': 'application/json',
+      },
+    }).then(this._parseResponse);
+  }
+
+  updatePositionsBoards(boards) {
+    return fetch(`${this.baseUrl}/boards`, {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${this._getToken()}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(boards),
+    }).then(this._parseResponse);
+  }
 }
 
 const baseUrl = 'http://localhost:3001/api/v1';
