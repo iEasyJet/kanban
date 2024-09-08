@@ -27,7 +27,6 @@ exports.getAll = async (req, res) => {
 
 exports.updatePosition = async (req, res) => {
   const { boards } = req.body;
-  console.log(boards);
 
   try {
     for (const key in boards) {

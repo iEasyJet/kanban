@@ -50,6 +50,13 @@ function Sidebar() {
     }
   }
 
+  async function addBoard() {
+    const newBoard = await api.createBoard();
+    const newList = [...boards, newBoard];
+    dispatch(setBoard(newList));
+    navigate(`/boards/${newBoard._id}`);
+  }
+
   useEffect(() => {
     async function getBoards() {
       try {
@@ -154,7 +161,7 @@ function Sidebar() {
             <Typography variant="body2" fontWeight="700">
               Приватные
             </Typography>
-            <IconButton>
+            <IconButton onClick={addBoard}>
               <AddBoxOutlinedIcon fontSize="small" />
             </IconButton>
           </Box>
