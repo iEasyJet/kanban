@@ -18,16 +18,17 @@ const boardSchema = new mogoose.Schema(
     },
     description: {
       type: String,
-      default: 'Без описания...',
+      default: `Сюда можно добавить многострочное описание.
+      Если все понятно, тогда вперед!`,
     },
     position: {
       type: Number,
     },
-    favorites: {
+    favorite: {
       type: Boolean,
       default: false,
     },
-    favoritesPosition: {
+    favoritePosition: {
       type: Number,
       default: 0,
     },

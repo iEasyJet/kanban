@@ -87,6 +87,17 @@ class Api {
       },
     }).then(this._parseResponse);
   }
+
+  updateBoard(boardId, params) {
+    return fetch(`${this.baseUrl}/boards/${boardId}`, {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${this._getToken()}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(params),
+    }).then(this._parseResponse);
+  }
 }
 
 const baseUrl = 'http://localhost:3001/api/v1';

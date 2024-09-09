@@ -59,3 +59,45 @@ exports.getOneBoard = async (req, res) => {
     res.status(500).json(error);
   }
 };
+
+exports.updateBoard = async (req, res) => {
+  const { boardId } = req.params;
+  const { title, description, favorite } = req.body;
+  try {
+    if (title === '') req.body.title = 'Без названия...';
+    if (description === '')
+      req.body.description = `Сюда можно добавить многострочное описание.
+      Если все понятно, тогда вперед!`;
+
+    const currentBoard = await Board.findById(boardId);
+    if (!currentBoard) return res.status(404).json('Доска не найдена!');
+
+    if (currentBoard.favorite !== favorite && favorite !== undefined) {
+      const favorites = await Board.find({
+        user: currentBoard.user,
+        favorite: true,
+        _id: { $ne: boardId },
+      });
+
+      if (favorite) {
+        req.body.favoritePosition = favorites.length > 0 ? favorites.length : 0;
+      } else {
+        for (const key in favorites) {
+          const el = favorites[key];
+
+          await Board.findByIdAndUpdate(el._id, {
+            $set: { favoritePosition: key },
+          });
+        }
+      }
+    }
+
+    const board = await Board.findByIdAndUpdate(boardId, {
+      $set: { favoritePosition: req.body },
+    });
+
+    res.status(200).json(board);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};

@@ -19,7 +19,7 @@ function Board() {
     title: '',
     description: '',
     sections: [],
-    isFavorites: false,
+    isFavorite: false,
     icon: '',
   });
 
@@ -31,7 +31,7 @@ function Board() {
           title: board.title,
           description: board.description,
           sections: board.sections,
-          isFavorites: board.favorites,
+          isFavorite: board.favorite,
           icon: board.icon,
         });
       } catch (error) {
@@ -52,7 +52,7 @@ function Board() {
         }}
       >
         <IconButton variant="outlined">
-          {boardInfo.isFavorites ? (
+          {boardInfo.isFavorite ? (
             <StarOutlinedIcon color="warning" />
           ) : (
             <StarBorderOutlinedIcon />

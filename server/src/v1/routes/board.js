@@ -21,4 +21,15 @@ router.get(
   boardController.getOneBoard
 );
 
+router.put(
+  '/:boardId',
+  param('boardId').custom((value) => {
+    if (!validation.isObjectId(value)) {
+      return Promise.reject('Невалидный ID доски');
+    } else return Promise.resolve();
+  }),
+  tokenHandler.verifyToken,
+  boardController.updateBoard
+);
+
 module.exports = router;
