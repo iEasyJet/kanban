@@ -77,6 +77,16 @@ class Api {
       body: JSON.stringify(boards),
     }).then(this._parseResponse);
   }
+
+  getOneBoard(boardId) {
+    return fetch(`${this.baseUrl}/boards/${boardId}`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${this._getToken()}`,
+        'Content-Type': 'application/json',
+      },
+    }).then(this._parseResponse);
+  }
 }
 
 const baseUrl = 'http://localhost:3001/api/v1';
