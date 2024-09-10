@@ -12,8 +12,16 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import EmojiPicker from '../components/common/EmojiPicker';
+import { useDispatch, useSelector } from 'react-redux';
+import { setBoard } from '../redux/Slices/boardSlice';
+
+let timer;
+const timeout = 500;
 
 function Board() {
+  const dispatch = useDispatch();
+  const boards = useSelector((state) => state.board.value);
   const { boardId } = useParams();
   const [boardInfo, setBoardInfo] = useState({
     title: '',
@@ -22,6 +30,60 @@ function Board() {
     isFavorite: false,
     icon: '',
   });
+
+  async function onChangeIcon(newIcon) {
+    const temp = [...boards];
+    const index = temp.findIndex((b) => b._id === boardId);
+    temp[index] = { ...temp[index], icon: newIcon };
+
+    try {
+      await api.updateBoard(boardId, { icon: newIcon });
+      setBoardInfo({ ...boardInfo, icon: newIcon });
+      dispatch(setBoard(temp));
+    } catch {
+      alert(
+        'Произошла ошибка при запросе к серверу при обнолвении иконки доски!'
+      );
+    }
+  }
+
+  function updateTitle(e) {
+    clearTimeout(timer);
+    const newTitle = e.target.value;
+
+    const temp = [...boards];
+    const index = temp.findIndex((b) => b._id === boardId);
+    temp[index] = { ...temp[index], title: newTitle };
+
+    setBoardInfo({ ...boardInfo, title: newTitle });
+    dispatch(setBoard(temp));
+
+    timer = setTimeout(async () => {
+      try {
+        await api.updateBoard(boardId, { title: newTitle });
+      } catch {
+        alert(
+          'Произошла ошибка при запросе к серверу при обнолвении иконки доски!'
+        );
+      }
+    }, timeout);
+  }
+
+  function updateDescription(e) {
+    clearTimeout(timer);
+    const newDescription = e.target.value;
+    setBoardInfo({ ...boardInfo, description: newDescription });
+
+    timer = setTimeout(async () => {
+      try {
+        await api.updateBoard(boardId, { description: newDescription });
+      } catch {
+        alert(
+          'Произошла ошибка при запросе к серверу при обнолвении иконки доски!'
+        );
+      }
+    }, timeout);
+  }
 
   useEffect(() => {
     const getBoard = async () => {
@@ -34,13 +96,16 @@ function Board() {
           isFavorite: board.favorite,
           icon: board.icon,
         });
-      } catch (error) {
-        alert(error);
+      } catch {
+        alert(
+          'Произошла ошибка при запросе к серверу за данными выбранной доски!'
+        );
       }
     };
 
     getBoard();
   }, [boardId]);
+
   return (
     <>
       <Box
@@ -64,7 +129,7 @@ function Board() {
       </Box>
       <Box sx={{ padding: '10px 50px' }}>
         <Box>
-          {' '}
+          <EmojiPicker icon={boardInfo.icon} onChange={onChangeIcon} />
           <TextField
             variant="outlined"
             placeholder="Заголовок доски"
@@ -78,6 +143,7 @@ function Board() {
                 fontWeight: '700',
               },
             }}
+            onChange={updateTitle}
           />
           <TextField
             variant="outlined"
@@ -90,6 +156,7 @@ function Board() {
               '& .MuiOutlinedInput-notchedOutline': { border: 'unset' },
               '& .MuiOutlinedInput-root': { fontSize: '0.8rem' },
             }}
+            onChange={updateDescription}
           />
         </Box>
 

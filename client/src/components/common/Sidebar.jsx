@@ -40,21 +40,26 @@ function Sidebar() {
       return item._id === boardId;
     });
 
-    setActiveIndex(activeItem);
-    dispatch(setBoard(newList));
-
     try {
       await api.updatePositionsBoards({ boards: newList });
-    } catch (error) {
-      alert(error);
+      setActiveIndex(activeItem);
+      dispatch(setBoard(newList));
+    } catch {
+      alert(
+        'Произошла ошибка при запросе к серверу при обновлении позиции доски!'
+      );
     }
   }
 
   async function addBoard() {
-    const newBoard = await api.createBoard();
-    const newList = [...boards, newBoard];
-    dispatch(setBoard(newList));
-    navigate(`/boards/${newBoard._id}`);
+    try {
+      const newBoard = await api.createBoard();
+      const newList = [...boards, newBoard];
+      dispatch(setBoard(newList));
+      navigate(`/boards/${newBoard._id}`);
+    } catch {
+      alert('Произошла ошибка при добавлении новой доски!');
+    }
   }
 
   useEffect(() => {
@@ -68,8 +73,8 @@ function Sidebar() {
             })
           )
         );
-      } catch (error) {
-        alert(error);
+      } catch {
+        alert('Произошла ошибка при запросе к серверу за досками!');
       }
     }
 

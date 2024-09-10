@@ -93,7 +93,7 @@ exports.updateBoard = async (req, res) => {
     }
 
     const board = await Board.findByIdAndUpdate(boardId, {
-      $set: { favoritePosition: req.body },
+      $set: req.body,
     });
 
     res.status(200).json(board);
