@@ -8,6 +8,12 @@ router.post('/', tokenHandler.verifyToken, boardController.create);
 
 router.get('/', tokenHandler.verifyToken, boardController.getAll);
 
+router.get(
+  '/favorites',
+  tokenHandler.verifyToken,
+  boardController.getFavoriteBoards
+);
+
 router.put('/', tokenHandler.verifyToken, boardController.updatePosition);
 
 router.get(

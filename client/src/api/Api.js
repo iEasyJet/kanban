@@ -98,6 +98,16 @@ class Api {
       body: JSON.stringify(params),
     }).then(this._parseResponse);
   }
+
+  getFavoriteBoards() {
+    return fetch(`${this.baseUrl}/boards/favorites`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${this._getToken()}`,
+        'Content-Type': 'application/json',
+      },
+    }).then(this._parseResponse);
+  }
 }
 
 const baseUrl = 'http://localhost:3001/api/v1';

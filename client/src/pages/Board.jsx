@@ -85,6 +85,17 @@ function Board() {
     }, timeout);
   }
 
+  async function addFavorite() {
+    try {
+      await api.updateBoard(boardId, { favorite: !boardInfo.isFavorite });
+      setBoardInfo({ ...boardInfo, isFavorite: !boardInfo.isFavorite });
+    } catch {
+      alert(
+        'Произошла ошибка при запросе к серверу при обновления статуса "Избранное"!'
+      );
+    }
+  }
+
   useEffect(() => {
     const getBoard = async () => {
       try {
@@ -116,7 +127,7 @@ function Board() {
           width: '100%',
         }}
       >
-        <IconButton variant="outlined">
+        <IconButton variant="outlined" onClick={addFavorite}>
           {boardInfo.isFavorite ? (
             <StarOutlinedIcon color="warning" />
           ) : (

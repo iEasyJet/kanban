@@ -101,3 +101,30 @@ exports.updateBoard = async (req, res) => {
     res.status(500).json(error);
   }
 };
+
+exports.getFavoriteBoards = async (req, res) => {
+  try {
+    const boards = await Board.find({
+      user: req.user._id,
+      favorite: true,
+    });
+    res.status(200).json(boards);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};
+
+/* exports.updateFavotitePosition = async (req, res) => {
+  const { boards } = req.body;
+
+  try {
+    for (const key in boards) {
+      await Board.findByIdAndUpdate(boards[key]._id, {
+        $set: { favoritePosition: key },
+      });
+    }
+    res.status(200).json('updated');
+  } catch (error) {
+    res.status(500).json(error);
+  }
+}; */

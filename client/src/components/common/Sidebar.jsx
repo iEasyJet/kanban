@@ -15,6 +15,7 @@ import { useEffect, useState } from 'react';
 import api from '../../api/Api';
 import { setBoard } from '../../redux/Slices/boardSlice';
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
+import FavoriteList from './FavoriteList';
 
 function Sidebar() {
   const navigate = useNavigate();
@@ -134,21 +135,7 @@ function Sidebar() {
             paddingTop: '10px',
           }}
         />
-        <ListItem>
-          <Box
-            sx={{
-              width: '100%',
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-            }}
-          >
-            <Typography variant="body2" fontWeight="700">
-              Избранное
-            </Typography>
-          </Box>
-        </ListItem>
-
+        <FavoriteList />
         <Box
           sx={{
             paddingTop: '10px',
