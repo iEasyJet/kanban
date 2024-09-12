@@ -14,6 +14,7 @@ function AppLayout({ component }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    console.warn = console.error = () => {};
     const checkAuth = async () => {
       const user = await authUtils.isAuth();
       if (!user) {

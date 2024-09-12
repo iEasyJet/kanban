@@ -63,7 +63,7 @@ function Board() {
         await api.updateBoard(boardId, { title: newTitle });
       } catch {
         alert(
-          'Произошла ошибка при запросе к серверу при обнолвении иконки доски!'
+          'Произошла ошибка при запросе к серверу при обновления заголовка доски!'
         );
       }
     }, timeout);
@@ -79,7 +79,7 @@ function Board() {
         await api.updateBoard(boardId, { description: newDescription });
       } catch {
         alert(
-          'Произошла ошибка при запросе к серверу при обнолвении иконки доски!'
+          'Произошла ошибка при запросе к серверу при обновления описания доски!'
         );
       }
     }, timeout);
