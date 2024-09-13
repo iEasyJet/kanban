@@ -1,58 +1,53 @@
-const router = require('express').Router();
+const router = require('express').Router({ mergeParams: true });
 const { param } = require('express-validator');
 const validation = require('../handlers/validation');
 const tokenHandler = require('../handlers/tokenHandler');
-const boardController = require('../controllers/board');
+const sectionController = require('../controllers/section');
 
-router.post('/', tokenHandler.verifyToken, boardController.createBoard);
-
-router.get('/', tokenHandler.verifyToken, boardController.getAllBoards);
-
-router.get(
-  '/favorites',
+router.post(
+  '/',
+  param('boardId').custom((value) => {
+    if (!validation.isObjectId(value)) {
+      return Promise.reject('Невалидный ID доски');
+    } else return Promise.resolve();
+  }),
+  validation.validate,
   tokenHandler.verifyToken,
-  boardController.getFavoriteBoards
+  sectionController.createSection
 );
 
-router.put('/', tokenHandler.verifyToken, boardController.updatePositionBoard);
-
 router.put(
-  '/favorites',
+  '/:sectionId',
+  param('boardId').custom((value) => {
+    if (!validation.isObjectId(value)) {
+      return Promise.reject('Невалидный ID доски');
+    } else return Promise.resolve();
+  }),
+  param('sectionId').custom((value) => {
+    if (!validation.isObjectId(value)) {
+      return Promise.reject('Невалидный ID секции');
+    } else return Promise.resolve();
+  }),
+  validation.validate,
   tokenHandler.verifyToken,
-  boardController.updateFavotitePosition
+  sectionController.updateSection
 );
 
 router.delete(
-  '/:boardId',
+  '/:sectionId',
   param('boardId').custom((value) => {
     if (!validation.isObjectId(value)) {
       return Promise.reject('Невалидный ID доски');
     } else return Promise.resolve();
   }),
-  tokenHandler.verifyToken,
-  boardController.deleteBoard
-);
-
-router.get(
-  '/:boardId',
-  param('boardId').custom((value) => {
+  param('sectionId').custom((value) => {
     if (!validation.isObjectId(value)) {
-      return Promise.reject('Невалидный ID доски');
+      return Promise.reject('Невалидный ID секции');
     } else return Promise.resolve();
   }),
+  validation.validate,
   tokenHandler.verifyToken,
-  boardController.getOneBoard
-);
-
-router.put(
-  '/:boardId',
-  param('boardId').custom((value) => {
-    if (!validation.isObjectId(value)) {
-      return Promise.reject('Невалидный ID доски');
-    } else return Promise.resolve();
-  }),
-  tokenHandler.verifyToken,
-  boardController.updateBoard
+  sectionController.deleteSection
 );
 
 module.exports = router;

@@ -2,7 +2,7 @@ const Board = require('../models/board');
 const Section = require('../models/section');
 const Task = require('../models/task');
 
-exports.create = async (req, res) => {
+exports.createBoard = async (req, res) => {
   try {
     const boards = await Board.find();
 
@@ -16,7 +16,7 @@ exports.create = async (req, res) => {
   }
 };
 
-exports.getAll = async (req, res) => {
+exports.getAllBoards = async (req, res) => {
   try {
     const boards = await Board.find({ user: req.user._id }).sort('-position');
     res.status(200).json(boards);
@@ -25,7 +25,7 @@ exports.getAll = async (req, res) => {
   }
 };
 
-exports.updatePosition = async (req, res) => {
+exports.updatePositionBoard = async (req, res) => {
   const { boards } = req.body;
 
   try {
