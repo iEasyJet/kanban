@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import api from '../api/Api';
 import StarOutlinedIcon from '@mui/icons-material/StarOutlined';
 import StarBorderOutlinedIcon from '@mui/icons-material/StarBorderOutlined';
@@ -15,13 +15,16 @@ import {
 import EmojiPicker from '../components/common/EmojiPicker';
 import { useDispatch, useSelector } from 'react-redux';
 import { setBoard } from '../redux/Slices/boardSlice';
+import { setFavorite } from '../redux/Slices/favoriteSlice';
 
 let timer;
 const timeout = 500;
 
 function Board() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const boards = useSelector((state) => state.board.value);
+  const favoriteBoards = useSelector((state) => state.favorite.value);
   const { boardId } = useParams();
   const [boardInfo, setBoardInfo] = useState({
     title: '',
@@ -40,6 +43,14 @@ function Board() {
       await api.updateBoard(boardId, { icon: newIcon });
       setBoardInfo({ ...boardInfo, icon: newIcon });
       dispatch(setBoard(temp));
+
+      if (boardInfo.isFavorite) {
+        const temp = [...favoriteBoards];
+        const index = temp.findIndex((b) => b._id === boardId);
+        temp[index] = { ...temp[index], icon: newIcon };
+
+        dispatch(setFavorite(temp));
+      }
     } catch {
       alert(
         'Произошла ошибка при запросе к серверу при обнолвении иконки доски!'
@@ -57,6 +68,14 @@ function Board() {
 
     setBoardInfo({ ...boardInfo, title: newTitle });
     dispatch(setBoard(temp));
+
+    if (boardInfo.isFavorite) {
+      const temp = [...favoriteBoards];
+      const index = temp.findIndex((b) => b._id === boardId);
+      temp[index] = { ...temp[index], title: newTitle };
+
+      dispatch(setFavorite(temp));
+    }
 
     timer = setTimeout(async () => {
       try {
@@ -87,12 +106,52 @@ function Board() {
 
   async function addFavorite() {
     try {
-      await api.updateBoard(boardId, { favorite: !boardInfo.isFavorite });
+      const board = await api.updateBoard(boardId, {
+        favorite: !boardInfo.isFavorite,
+      });
+
+      let newFavoriteList = [...favoriteBoards];
+
+      if (!board.favorite) {
+        newFavoriteList = newFavoriteList.filter((el) => el._id !== boardId);
+      } else {
+        newFavoriteList.push(board);
+      }
+
+      dispatch(setFavorite(newFavoriteList));
       setBoardInfo({ ...boardInfo, isFavorite: !boardInfo.isFavorite });
     } catch {
       alert(
         'Произошла ошибка при запросе к серверу при обновления статуса "Избранное"!'
       );
+    }
+  }
+
+  async function deleteBoard() {
+    try {
+      await api.deleteBoard(boardId);
+
+      if (boardInfo.isFavorite) {
+        const newFavoriteList = favoriteBoards.filter((el) => {
+          return el._id !== boardId;
+        });
+
+        dispatch(setFavorite(newFavoriteList));
+      }
+
+      const newList = boards.filter((el) => {
+        return el._id !== boardId;
+      });
+
+      dispatch(setBoard(newList));
+
+      if (newList.length === 0) {
+        navigate('/boards');
+      } else {
+        navigate(`/boards/${newList[0]._id}`);
+      }
+    } catch {
+      alert('Произошла ошибка при запросе к серверу при удалении доски!');
     }
   }
 
@@ -134,7 +193,7 @@ function Board() {
             <StarBorderOutlinedIcon />
           )}
         </IconButton>
-        <IconButton variant="outlined" color="error">
+        <IconButton variant="outlined" color="error" onClick={deleteBoard}>
           <DeleteOutlinedIcon />
         </IconButton>
       </Box>

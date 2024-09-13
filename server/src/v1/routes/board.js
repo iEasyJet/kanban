@@ -16,6 +16,23 @@ router.get(
 
 router.put('/', tokenHandler.verifyToken, boardController.updatePosition);
 
+router.put(
+  '/favorites',
+  tokenHandler.verifyToken,
+  boardController.updateFavotitePosition
+);
+
+router.delete(
+  '/:boardId',
+  param('boardId').custom((value) => {
+    if (!validation.isObjectId(value)) {
+      return Promise.reject('Невалидный ID доски');
+    } else return Promise.resolve();
+  }),
+  tokenHandler.verifyToken,
+  boardController.deleteBoard
+);
+
 router.get(
   '/:boardId',
   param('boardId').custom((value) => {

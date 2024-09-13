@@ -3,7 +3,7 @@ const { schemaOptions } = require('./modelOptions');
 
 const sectionSchema = new mogoose.Schema(
   {
-    user: {
+    board: {
       type: mogoose.Schema.ObjectId,
       ref: 'Board',
       required: true,

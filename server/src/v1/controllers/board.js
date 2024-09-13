@@ -63,6 +63,7 @@ exports.getOneBoard = async (req, res) => {
 exports.updateBoard = async (req, res) => {
   const { boardId } = req.params;
   const { title, description, favorite } = req.body;
+
   try {
     if (title === '') req.body.title = 'Без названия...';
     if (description === '')
@@ -77,7 +78,7 @@ exports.updateBoard = async (req, res) => {
         user: currentBoard.user,
         favorite: true,
         _id: { $ne: boardId },
-      });
+      }).sort('favoritePosition');
 
       if (favorite) {
         req.body.favoritePosition = favorites.length > 0 ? favorites.length : 0;
@@ -92,10 +93,13 @@ exports.updateBoard = async (req, res) => {
       }
     }
 
-    const board = await Board.findByIdAndUpdate(boardId, {
-      $set: req.body,
-    });
-
+    const board = await Board.findByIdAndUpdate(
+      boardId,
+      {
+        $set: req.body,
+      },
+      { new: true }
+    );
     res.status(200).json(board);
   } catch (error) {
     res.status(500).json(error);
@@ -114,7 +118,7 @@ exports.getFavoriteBoards = async (req, res) => {
   }
 };
 
-/* exports.updateFavotitePosition = async (req, res) => {
+exports.updateFavotitePosition = async (req, res) => {
   const { boards } = req.body;
 
   try {
@@ -127,4 +131,53 @@ exports.getFavoriteBoards = async (req, res) => {
   } catch (error) {
     res.status(500).json(error);
   }
-}; */
+};
+
+exports.deleteBoard = async (req, res) => {
+  const { boardId } = req.params;
+
+  try {
+    const sections = await Section.find({ board: boardId });
+    for (const section of sections) {
+      await Task.deleteMany({ section: section._id });
+      await Section.findByIdAndDelete(section._id);
+    }
+
+    const currentBoard = await Board.findById(boardId);
+
+    const boards = await Board.find({
+      user: req.user._id,
+      _id: {
+        $ne: boardId,
+      },
+    }).sort('position');
+
+    for (const key in boards) {
+      await Board.findByIdAndUpdate(boards[key]._id, {
+        $set: { position: key },
+      });
+    }
+
+    if (currentBoard.favorite) {
+      const favorites = await Board.find({
+        user: currentBoard.user,
+        favorite: true,
+        _id: { $ne: boardId },
+      }).sort('favoritePosition');
+
+      for (const key in favorites) {
+        const el = favorites[key];
+
+        await Board.findByIdAndUpdate(el._id, {
+          $set: { favoritePosition: key },
+        });
+      }
+    }
+
+    await Board.findOneAndDelete(boardId);
+
+    res.status(200).json('deleted');
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};

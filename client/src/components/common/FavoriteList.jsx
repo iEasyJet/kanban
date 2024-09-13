@@ -13,12 +13,28 @@ function FavoriteList() {
   const [activeIndex, setActiveIndex] = useState(0);
   const { boardId } = useParams();
 
-  function onDragEnd() {}
+  async function onDragEnd({ source, destination }) {
+    const newList = [...favoriteBoards];
+    const [removed] = newList.splice(source.index, 1);
+    newList.splice(destination.index, 0, removed);
+
+    const activeItem = newList.findIndex((item) => {
+      return item._id === boardId;
+    });
+
+    try {
+      await api.updateFavoritePositionsBoards({ boards: newList });
+      setActiveIndex(activeItem);
+      dispatch(setFavorite(newList));
+    } catch {
+      alert(
+        'Произошла ошибка при запросе к серверу при обновлении позиции доски!'
+      );
+    }
+  }
 
   useEffect(() => {
     async function getFavoriteBoards() {
-      console.log(1);
-
       try {
         const res = await api.getFavoriteBoards();
         dispatch(

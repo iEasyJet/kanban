@@ -108,6 +108,27 @@ class Api {
       },
     }).then(this._parseResponse);
   }
+
+  updateFavoritePositionsBoards(boards) {
+    return fetch(`${this.baseUrl}/boards/favorites`, {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${this._getToken()}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(boards),
+    }).then(this._parseResponse);
+  }
+
+  deleteBoard(boardId) {
+    return fetch(`${this.baseUrl}/boards/${boardId}`, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${this._getToken()}`,
+        'Content-Type': 'application/json',
+      },
+    }).then(this._parseResponse);
+  }
 }
 
 const baseUrl = 'http://localhost:3001/api/v1';
