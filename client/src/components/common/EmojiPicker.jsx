@@ -3,7 +3,6 @@ import { Box, Typography } from '@mui/material';
 import data from '@emoji-mart/data';
 import Picker from '@emoji-mart/react';
 
-// eslint-disable-next-line react/prop-types
 function EmojiPicker({ icon, onChange }) {
   const [selectedEmoji, setSelectedEmoji] = useState('');
   const [isShowPopup, setIsShowPopup] = useState(false);

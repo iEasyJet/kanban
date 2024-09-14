@@ -8,7 +8,6 @@ function Loading(props) {
         justifyContent: 'center',
         alignItems: 'center',
         width: '100%',
-        // eslint-disable-next-line react/prop-types
         height: props.fullHeight ? '100vh' : '100%',
       }}
     >

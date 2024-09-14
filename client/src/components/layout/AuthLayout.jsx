@@ -5,7 +5,6 @@ import Loading from '../common/Loading';
 import { Box, Container } from '@mui/material';
 import logo from '../../images/logo.svg';
 
-// eslint-disable-next-line react/prop-types
 function AuthLayout({ component }) {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);

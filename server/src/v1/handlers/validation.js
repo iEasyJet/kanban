@@ -10,5 +10,5 @@ exports.validate = (req, res, next) => {
 };
 
 exports.isObjectId = (value) => {
-  mongoose.isObjectId.isValid(value);
+  return mongoose.Types.ObjectId.isValid(value);
 };

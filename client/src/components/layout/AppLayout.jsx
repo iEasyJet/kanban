@@ -7,7 +7,6 @@ import { Box } from '@mui/material';
 import Sidebar from '../common/Sidebar';
 import { setUser } from '../../redux/Slices/userSlice';
 
-// eslint-disable-next-line react/prop-types
 function AppLayout({ component }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
