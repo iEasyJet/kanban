@@ -129,6 +129,37 @@ class Api {
       },
     }).then(this._parseResponse);
   }
+
+  createSection(boardId) {
+    return fetch(`${this.baseUrl}/boards/${boardId}/sections`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${this._getToken()}`,
+        'Content-Type': 'application/json',
+      },
+    }).then(this._parseResponse);
+  }
+
+  updateSection(boardId, sectionId, params) {
+    return fetch(`${this.baseUrl}/boards/${boardId}/sections/${sectionId}`, {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${this._getToken()}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(params),
+    }).then(this._parseResponse);
+  }
+
+  deleteSection(boardId, sectionId) {
+    return fetch(`${this.baseUrl}/boards/${boardId}/sections/${sectionId}`, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${this._getToken()}`,
+        'Content-Type': 'application/json',
+      },
+    }).then(this._parseResponse);
+  }
 }
 
 const baseUrl = 'http://localhost:3001/api/v1';
