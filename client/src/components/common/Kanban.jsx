@@ -17,6 +17,7 @@ import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import api from '../../api/Api';
+import TaskModal from './TaskModal';
 
 let timer;
 const timeout = 500;
@@ -24,6 +25,7 @@ const timeout = 500;
 function Kanban(props) {
   const boardId = props.boardId;
   const [data, setData] = useState([]);
+  const [selectedTask, setSelectedTask] = useState(undefined);
 
   async function onDragEnd({ source, destination }) {
     if (!destination) return;
@@ -131,6 +133,28 @@ function Kanban(props) {
     }
   }
 
+  async function onUpdateTask(task) {
+    const newData = [...data];
+    const sectionIndex = newData.findIndex((el) => el._id === task.section._id);
+    const taskIndex = newData[sectionIndex].tasks.findIndex(
+      (t) => t._id === task._id
+    );
+
+    newData[sectionIndex].tasks[taskIndex] = task;
+    setData(newData);
+  }
+
+  async function onDeleteTask(task) {
+    const newData = [...data];
+    const sectionIndex = newData.findIndex((el) => el._id === task.section._id);
+    const taskIndex = newData[sectionIndex].tasks.findIndex(
+      (t) => t._id === task._id
+    );
+
+    newData[sectionIndex].tasks.splice(taskIndex, 1);
+    setData(newData);
+  }
+
   useEffect(() => {
     setData(props.sections);
   }, [props.sections]);
@@ -224,6 +248,7 @@ function Kanban(props) {
                       >
                         {(provided, snapshot) => (
                           <Card
+                            onClick={() => setSelectedTask(task)}
                             ref={provided.innerRef}
                             {...provided.draggableProps}
                             {...provided.dragHandleProps}
@@ -250,6 +275,13 @@ function Kanban(props) {
           ))}
         </Box>
       </DragDropContext>
+      <TaskModal
+        task={selectedTask}
+        boardId={boardId}
+        onClose={() => setSelectedTask(undefined)}
+        onUpdate={onUpdateTask}
+        onDelete={onDeleteTask}
+      />
     </>
   );
 }
