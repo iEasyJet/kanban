@@ -35,6 +35,8 @@ function Sidebar() {
   async function onDragEnd({ source, destination }) {
     const newList = [...boards];
     const [removed] = newList.splice(source.index, 1);
+    console.log(removed);
+
     newList.splice(destination.index, 0, removed);
 
     const activeItem = newList.findIndex((item) => {

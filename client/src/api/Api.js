@@ -160,6 +160,49 @@ class Api {
       },
     }).then(this._parseResponse);
   }
+
+  createTask(boardId, sectionId) {
+    return fetch(`${this.baseUrl}/boards/${boardId}/tasks`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${this._getToken()}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(sectionId),
+    }).then(this._parseResponse);
+  }
+
+  updateTask(boardId, taskId, params) {
+    return fetch(`${this.baseUrl}/boards/${boardId}/tasks/${taskId}`, {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${this._getToken()}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(params),
+    }).then(this._parseResponse);
+  }
+
+  updatePositionTask(boardId, params) {
+    return fetch(`${this.baseUrl}/boards/${boardId}/tasks/update-position`, {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${this._getToken()}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(params),
+    }).then(this._parseResponse);
+  }
+
+  deleteTask(boardId, taskId) {
+    return fetch(`${this.baseUrl}/boards/${boardId}/tasks/${taskId}`, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${this._getToken()}`,
+        'Content-Type': 'application/json',
+      },
+    }).then(this._parseResponse);
+  }
 }
 
 const baseUrl = 'http://localhost:3001/api/v1';

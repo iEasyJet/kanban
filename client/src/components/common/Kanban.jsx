@@ -25,7 +25,51 @@ function Kanban(props) {
   const boardId = props.boardId;
   const [data, setData] = useState([]);
 
-  function onDragEnd() {}
+  async function onDragEnd({ source, destination }) {
+    if (!destination) return;
+
+    const sourceColIndex = data.findIndex(
+      (el) => el._id === source.droppableId
+    );
+    const destinationColIndex = data.findIndex(
+      (el) => el._id === destination.droppableId
+    );
+
+    const sourceCol = data[sourceColIndex];
+    const destinationCol = data[destinationColIndex];
+
+    const sourceSectionId = sourceCol._id;
+    const destinationSectionId = destinationCol._id;
+
+    const sourceTasks = [...sourceCol.tasks];
+    const destinationTasks = [...destinationCol.tasks];
+
+    if (source.droppableId !== destination.droppableId) {
+      const [removed] = sourceTasks.splice(source.index, 1);
+      destinationTasks.splice(destination.index, 0, removed);
+      data[sourceColIndex].tasks = sourceTasks;
+      data[destinationColIndex].tasks = destinationTasks;
+    } else {
+      const [removed] = destinationTasks.splice(source.index, 1);
+      destinationTasks.splice(destination.index, 0, removed);
+      data[destinationColIndex].tasks = destinationTasks;
+    }
+
+    try {
+      await api.updatePositionTask(boardId, {
+        resourceList: sourceTasks,
+        destinationList: destinationTasks,
+        resourceSectionId: sourceSectionId,
+        destinationSectionId: destinationSectionId,
+      });
+
+      setData(data);
+    } catch {
+      alert(
+        'Произошла ошибка при запросе к серверу при перемещении задач из секции в другую секцию!'
+      );
+    }
+  }
 
   async function createSection() {
     try {
@@ -39,7 +83,17 @@ function Kanban(props) {
   }
 
   async function createTask(sectionId) {
-    console.log(sectionId);
+    try {
+      const task = await api.createTask(boardId, { sectionId });
+      const newData = [...data];
+      const index = newData.findIndex((el) => el._id === sectionId);
+      newData[index].tasks.unshift(task);
+      setData(newData);
+    } catch {
+      alert(
+        'Произошла ошибка при запросе к серверу при создании задачи секции доски!'
+      );
+    }
   }
 
   async function changeTitle(e, sectionId) {
@@ -171,7 +225,7 @@ function Kanban(props) {
                         {(provided, snapshot) => (
                           <Card
                             ref={provided.innerRef}
-                            {...provided.droppableProps}
+                            {...provided.draggableProps}
                             {...provided.dragHandleProps}
                             sx={{
                               padding: '10px',
@@ -180,7 +234,11 @@ function Kanban(props) {
                                 ? 'grab'
                                 : 'pointer!important',
                             }}
-                          ></Card>
+                          >
+                            <Typography>
+                              {task.title === '' ? 'Без названия' : task.title}
+                            </Typography>
+                          </Card>
                         )}
                       </Draggable>
                     ))}
