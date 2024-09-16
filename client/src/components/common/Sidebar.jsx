@@ -35,7 +35,6 @@ function Sidebar() {
   async function onDragEnd({ source, destination }) {
     const newList = [...boards];
     const [removed] = newList.splice(source.index, 1);
-    console.log(removed);
 
     newList.splice(destination.index, 0, removed);
 
@@ -43,10 +42,11 @@ function Sidebar() {
       return item._id === boardId;
     });
 
+    dispatch(setBoard(newList));
+    setActiveIndex(activeItem);
+
     try {
       await api.updatePositionsBoards({ boards: newList });
-      setActiveIndex(activeItem);
-      dispatch(setBoard(newList));
     } catch {
       alert(
         'Произошла ошибка при запросе к серверу при обновлении позиции доски!'
@@ -69,13 +69,7 @@ function Sidebar() {
     async function getBoards() {
       try {
         const res = await api.getAllBoards();
-        dispatch(
-          setBoard(
-            res.sort((a, b) => {
-              return a.position - b.position;
-            })
-          )
-        );
+        dispatch(setBoard(res));
       } catch {
         alert('Произошла ошибка при запросе к серверу за досками!');
       }

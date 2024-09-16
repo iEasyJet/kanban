@@ -205,7 +205,8 @@ class Api {
   }
 }
 
-const baseUrl = 'http://localhost:3001/api/v1';
+const baseUrl = 'https://easyjet.nomoredomainsrocks.ru/api/v1';
+/* const baseUrl = 'http://localhost:3001/api/v1'; */
 
 const api = new Api(baseUrl);
 

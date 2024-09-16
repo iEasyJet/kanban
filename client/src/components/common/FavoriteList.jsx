@@ -22,10 +22,11 @@ function FavoriteList() {
       return item._id === boardId;
     });
 
+    setActiveIndex(activeItem);
+    dispatch(setFavorite(newList));
+
     try {
       await api.updateFavoritePositionsBoards({ boards: newList });
-      setActiveIndex(activeItem);
-      dispatch(setFavorite(newList));
     } catch {
       alert(
         'Произошла ошибка при запросе к серверу при обновлении позиции доски!'
