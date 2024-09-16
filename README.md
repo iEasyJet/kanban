@@ -13,4 +13,4 @@ Fullstack приложение менеджера задач. С возможн�
 - MongoDB;
 - CKeditor;
 
-[gh-pages](https://ieasyjet.github.io/kanban/)
+[gh-pages](https://ieasyjet.github.io/kanban-gh-pages/)
