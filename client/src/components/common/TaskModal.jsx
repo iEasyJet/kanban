@@ -1,5 +1,4 @@
 import {
-  Backdrop,
   Modal,
   Fade,
   Box,
@@ -8,11 +7,13 @@ import {
   Typography,
   Divider,
 } from '@mui/material';
+
+import '../../css/editor.css';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import Moment from 'moment';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import api from '../../api/Api';
 
 const modalStyle = {
@@ -21,7 +22,7 @@ const modalStyle = {
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: '50%',
+  width: '80%',
   bgcolor: 'background.paper',
   border: '0px solid #000',
   boxShadow: 24,
@@ -37,11 +38,22 @@ function TaskModal(props) {
   const [task, setTask] = useState(props.task);
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
+  const editorWrapperRef = useRef();
 
   function onClose() {
     props.onClose();
     props.onUpdate();
   }
+
+  const updateEditorHeight = () => {
+    setTimeout(() => {
+      if (editorWrapperRef.current) {
+        const box = editorWrapperRef.current;
+        box.querySelector('.ck-editor__editable_inline').style.height =
+          box.offsetHeight - 50 + 'px';
+      }
+    }, timeout);
+  };
 
   async function deleteTask() {
     try {
@@ -66,6 +78,31 @@ function TaskModal(props) {
         );
       }
     }, timeout);
+
+    setTitle(newTitle);
+    task.title = newTitle;
+    props.onUpdate(task);
+  }
+
+  async function updateContent(event, editor) {
+    clearTimeout(timer);
+    const newContent = editor.getData();
+
+    if (newContent) {
+      timer = setTimeout(async () => {
+        try {
+          await api.updateTask(boardId, task._id, { content: newContent });
+        } catch {
+          alert(
+            'Произошла ошибка при запросе к серверу при обновлении контента секции доски!'
+          );
+        }
+      }, timeout);
+
+      task.content = newContent;
+      setContent(newContent);
+      props.onUpdate(task);
+    }
   }
 
   useEffect(() => {
@@ -75,13 +112,7 @@ function TaskModal(props) {
   }, [props.task]);
 
   return (
-    <Modal
-      open={task !== undefined}
-      onClose={onClose}
-      closeAfterTransition
-      BackdropComponent={Backdrop}
-      BackdropProps={{ timeout: 500 }}
-    >
+    <Modal open={task !== undefined} onClose={onClose} closeAfterTransition>
       <Fade in={task}>
         <Box sx={modalStyle}>
           <Box
@@ -121,17 +152,26 @@ function TaskModal(props) {
               onChange={(e) => updateTitle(e)}
             />
             <Typography variant="body2" fontWeight="700">
-              {task ? Moment(task.createdAt).format('DD-MM-YYYY') : ''}
+              {task
+                ? `Задача создана: ${Moment(task.createdAt).format(
+                    'DD-MM-YYYY'
+                  )}г.`
+                : ''}
             </Typography>
             <Divider sx={{ margin: '1.5rem 0' }} />
             <Box
               sx={{
+                position: 'relative',
                 height: '80%',
                 overflowX: 'hidden',
                 overflowY: 'auto',
               }}
             >
-              <CKEditor editor={ClassicEditor} data={content} />
+              <CKEditor
+                editor={ClassicEditor}
+                data={content}
+                onChange={updateContent}
+              />
             </Box>
           </Box>
         </Box>

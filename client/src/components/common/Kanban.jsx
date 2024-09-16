@@ -134,14 +134,18 @@ function Kanban(props) {
   }
 
   async function onUpdateTask(task) {
-    const newData = [...data];
-    const sectionIndex = newData.findIndex((el) => el._id === task.section._id);
-    const taskIndex = newData[sectionIndex].tasks.findIndex(
-      (t) => t._id === task._id
-    );
+    if (task) {
+      const newData = [...data];
+      const sectionIndex = newData.findIndex(
+        (el) => el._id === task.section._id
+      );
+      const taskIndex = newData[sectionIndex].tasks.findIndex(
+        (t) => t._id === task._id
+      );
 
-    newData[sectionIndex].tasks[taskIndex] = task;
-    setData(newData);
+      newData[sectionIndex].tasks[taskIndex] = task;
+      setData(newData);
+    }
   }
 
   async function onDeleteTask(task) {
